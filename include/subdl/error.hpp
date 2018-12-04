@@ -1,0 +1,3 @@
+#ifndef SUBDL_ERROR_HPP
+#define SUBDL_ERROR_HPP
+#endif // SUBDL_ERROR_HPP
