@@ -238,9 +238,9 @@ BOOST_AUTO_TEST_CASE(PushBackNil) {
         a.push_back(Nil{});
         BOOST_CHECK_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<Nil>(g.variant()));
-        std::get<Nil>(g.variant());
-        auto &n = a.get<Nil>(0);
+        BOOST_REQUIRE(holds_alternative<Nil>(g));
+        auto &n1 = get<Nil>(g);
+        auto &n2 = a.get<Nil>(0);
     }
     {
         Array a;
@@ -249,9 +249,9 @@ BOOST_AUTO_TEST_CASE(PushBackNil) {
         a.push_back(nil);
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<Nil>(g.variant()));
-        std::get<Nil>(g.variant());
-        auto &n = a.get<Nil>(0);
+        BOOST_REQUIRE(holds_alternative<Nil>(g));
+        auto &n1 = get<Nil>(g);
+        auto &n2 = a.get<Nil>(0);
     }
     {
         Array a;
@@ -263,11 +263,11 @@ BOOST_AUTO_TEST_CASE(PushBackNil) {
         BOOST_REQUIRE_EQUAL(a.size(), 2);
         const auto &e0 = a[0];
         const auto &e1 = a[1];
-        BOOST_REQUIRE(std::holds_alternative<Nil>(e0.variant()));
-        BOOST_CHECK(std::holds_alternative<Nil>(e1.variant()));
+        BOOST_REQUIRE(holds_alternative<Nil>(e0));
+        BOOST_CHECK(holds_alternative<Nil>(e1));
         BOOST_CHECK_NE(&e0, &e1);
-        std::get<Nil>(e0.variant());
-        auto &n = a.get<Nil>(0);
+        auto &n1 = get<Nil>(e0);
+        auto &n2 = a.get<Nil>(0);
     }
 }
 
@@ -276,9 +276,9 @@ BOOST_AUTO_TEST_CASE(EmplaceBackNil) {
     BOOST_CHECK_EQUAL(a.size(), 0);
     a.emplace_back();
     const auto &g = a[0];
-    BOOST_REQUIRE(std::holds_alternative<Nil>(g.variant()));
-    std::get<Nil>(g.variant());
-    auto &n = a.get<Nil>(0);
+    BOOST_REQUIRE(holds_alternative<Nil>(g));
+    auto &n1 = get<Nil>(g);
+    auto &n2 = a.get<Nil>(0);
 }
 
 BOOST_AUTO_TEST_CASE(PushBackInt) {
@@ -288,8 +288,8 @@ BOOST_AUTO_TEST_CASE(PushBackInt) {
         a.push_back(Int{42});
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<Int>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Int>(g.variant()).value(), 42);
+        BOOST_REQUIRE(holds_alternative<Int>(g));
+        BOOST_CHECK_EQUAL(get<Int>(g).value(), 42);
         BOOST_CHECK_EQUAL(a.get<Int>(0).value(), 42);
     }
     {
@@ -299,8 +299,8 @@ BOOST_AUTO_TEST_CASE(PushBackInt) {
         a.push_back(i);
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<Int>(g.variant()));
-        const auto &i2 = std::get<Int>(g.variant());
+        BOOST_REQUIRE(holds_alternative<Int>(g));
+        const auto &i2 = get<Int>(g);
         BOOST_CHECK_EQUAL(i2.value(), 42);
         i.set_value(82);
         BOOST_CHECK_EQUAL(i2.value(), 42);
@@ -313,8 +313,8 @@ BOOST_AUTO_TEST_CASE(EmplaceBackInt) {
     BOOST_CHECK_EQUAL(a.size(), 0);
     a.emplace_back(4);
     const auto &g = a[0];
-    BOOST_REQUIRE(std::holds_alternative<Int>(g.variant()));
-    auto i = std::get<Int>(g.variant());
+    BOOST_REQUIRE(holds_alternative<Int>(g));
+    auto i = get<Int>(g);
     BOOST_CHECK_EQUAL(i.value(), 4);
 }
 
@@ -325,8 +325,8 @@ BOOST_AUTO_TEST_CASE(PushBackDouble) {
         a.push_back(Double{1.54});
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<Double>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Double>(g.variant()).value(), 1.54);
+        BOOST_REQUIRE(holds_alternative<Double>(g));
+        BOOST_CHECK_EQUAL(get<Double>(g).value(), 1.54);
         BOOST_CHECK_EQUAL(a.get<Double>(0).value(), 1.54);
     }
     {
@@ -336,8 +336,8 @@ BOOST_AUTO_TEST_CASE(PushBackDouble) {
         a.push_back(d);
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<Double>(g.variant()));
-        const auto &d2 = std::get<Double>(g.variant());
+        BOOST_REQUIRE(holds_alternative<Double>(g));
+        const auto &d2 = get<Double>(g);
         BOOST_CHECK_EQUAL(d2.value(), 3.14159);
         d.set_value(2.87);
         BOOST_CHECK_EQUAL(d2.value(), 3.14159);
@@ -350,8 +350,8 @@ BOOST_AUTO_TEST_CASE(EmplaceBackDouble) {
     BOOST_CHECK_EQUAL(a.size(), 0);
     a.emplace_back(4.5);
     const auto &g = a[0];
-    BOOST_REQUIRE(std::holds_alternative<Double>(g.variant()));
-    auto d = std::get<Double>(g.variant());
+    BOOST_REQUIRE(holds_alternative<Double>(g));
+    auto d = get<Double>(g);
     BOOST_CHECK_EQUAL(d.value(), 4.5);
 }
 
@@ -362,8 +362,8 @@ BOOST_AUTO_TEST_CASE(PushBackString) {
         a.push_back(String{"hello string"});
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<String>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<String>(g.variant()).value(), "hello string");
+        BOOST_REQUIRE(holds_alternative<String>(g));
+        BOOST_CHECK_EQUAL(get<String>(g).value(), "hello string");
         BOOST_CHECK_EQUAL(a.get<String>(0).value(), "hello string");
     }
     {
@@ -374,8 +374,8 @@ BOOST_AUTO_TEST_CASE(PushBackString) {
         BOOST_CHECK_EQUAL(s.value(), "long string");
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<String>(g.variant()));
-        const auto &s2 = std::get<String>(g.variant());
+        BOOST_REQUIRE(holds_alternative<String>(g));
+        const auto &s2 = get<String>(g);
         BOOST_CHECK_EQUAL(s2.value(), "long string");
         s.value() += " even longer";
         BOOST_CHECK_EQUAL(s.value(), "long string even longer");
@@ -389,8 +389,8 @@ BOOST_AUTO_TEST_CASE(EmplaceBackString) {
     BOOST_CHECK_EQUAL(a.size(), 0);
     a.emplace_back("a nice string");
     const auto &g = a[0];
-    BOOST_REQUIRE(std::holds_alternative<String>(g.variant()));
-    auto s = std::get<String>(g.variant());
+    BOOST_REQUIRE(holds_alternative<String>(g));
+    auto s = get<String>(g);
     BOOST_CHECK_EQUAL(s.value(), "a nice string");
 }
 
@@ -401,11 +401,11 @@ BOOST_AUTO_TEST_CASE(PushBackArray) {
         auto &a_child = a.push_back(Array{});
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<Array>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Array>(g.variant()).size(), 0);
+        BOOST_REQUIRE(holds_alternative<Array>(g));
+        BOOST_CHECK_EQUAL(get<Array>(g).size(), 0);
         BOOST_CHECK_EQUAL(a_child.size(), 0);
         a_child.push_back(Nil{});
-        BOOST_CHECK_EQUAL(std::get<Array>(g.variant()).size(), 1);
+        BOOST_CHECK_EQUAL(get<Array>(g).size(), 1);
         BOOST_CHECK_EQUAL(a_child.size(), 1);
         BOOST_CHECK_EQUAL(a.get<Array>(0).size(), 1);
     }
@@ -416,19 +416,19 @@ BOOST_AUTO_TEST_CASE(PushBackArray) {
         auto &a_child = a.push_back(Array{});
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<Array>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Array>(g.variant()).size(), 0);
+        BOOST_REQUIRE(holds_alternative<Array>(g));
+        BOOST_CHECK_EQUAL(get<Array>(g).size(), 0);
         BOOST_CHECK_EQUAL(a_child.size(), 0);
         BOOST_CHECK_EQUAL(a2.size(), 0);
 
         a2.push_back(Nil{});
         BOOST_CHECK_EQUAL(a2.size(), 1);
-        BOOST_CHECK_EQUAL(std::get<Array>(g.variant()).size(), 0);
+        BOOST_CHECK_EQUAL(get<Array>(g).size(), 0);
         BOOST_CHECK_EQUAL(a_child.size(), 0);
 
         a_child.push_back(Nil{});
         BOOST_CHECK_EQUAL(a2.size(), 1);
-        BOOST_CHECK_EQUAL(std::get<Array>(g.variant()).size(), 1);
+        BOOST_CHECK_EQUAL(get<Array>(g).size(), 1);
         BOOST_CHECK_EQUAL(a_child.size(), 1);
     }
 }
@@ -438,8 +438,8 @@ BOOST_AUTO_TEST_CASE(EmplaceBackArray) {
     BOOST_CHECK_EQUAL(a.size(), 0);
     a.emplace_back("a nice string");
     const auto &g = a[0];
-    BOOST_REQUIRE(std::holds_alternative<String>(g.variant()));
-    auto s = std::get<String>(g.variant());
+    BOOST_REQUIRE(holds_alternative<String>(g));
+    auto s = get<String>(g);
     BOOST_CHECK_EQUAL(s.value(), "a nice string");
 }
 
@@ -450,11 +450,11 @@ BOOST_AUTO_TEST_CASE(PushBackStruct) {
         auto &a_child = a.push_back(Struct{});
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<Struct>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Struct>(g.variant()).size(), 0);
+        BOOST_REQUIRE(holds_alternative<Struct>(g));
+        BOOST_CHECK_EQUAL(get<Struct>(g).size(), 0);
         BOOST_CHECK_EQUAL(a_child.size(), 0);
         a_child.insert("n0", Nil{});
-        BOOST_CHECK_EQUAL(std::get<Struct>(g.variant()).size(), 1);
+        BOOST_CHECK_EQUAL(get<Struct>(g).size(), 1);
         BOOST_CHECK_EQUAL(a_child.size(), 1);
         BOOST_CHECK_EQUAL(a.get<Struct>(0).size(), 1);
     }
@@ -467,19 +467,19 @@ BOOST_AUTO_TEST_CASE(PushBackStruct) {
         BOOST_REQUIRE_EQUAL(a.size(), 1);
         BOOST_REQUIRE_EQUAL(a2.size(), 0);
         const auto &g = a[0];
-        BOOST_REQUIRE(std::holds_alternative<Struct>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Struct>(g.variant()).size(), 0);
+        BOOST_REQUIRE(holds_alternative<Struct>(g));
+        BOOST_CHECK_EQUAL(get<Struct>(g).size(), 0);
         BOOST_CHECK_EQUAL(a_child.size(), 0);
         BOOST_CHECK_EQUAL(a2.size(), 0);
 
         a2.push_back(Nil{});
         BOOST_CHECK_EQUAL(a2.size(), 1);
-        BOOST_CHECK_EQUAL(std::get<Struct>(g.variant()).size(), 0);
+        BOOST_CHECK_EQUAL(get<Struct>(g).size(), 0);
         BOOST_CHECK_EQUAL(a_child.size(), 0);
 
         a_child.insert("n0", Nil{});
         BOOST_CHECK_EQUAL(a2.size(), 1);
-        BOOST_CHECK_EQUAL(std::get<Struct>(g.variant()).size(), 1);
+        BOOST_CHECK_EQUAL(get<Struct>(g).size(), 1);
         BOOST_CHECK_EQUAL(a_child.size(), 1);
     }
 }
@@ -494,8 +494,8 @@ BOOST_AUTO_TEST_CASE(ForLoop) {
         int iteration = 0;
         for (const auto &v : a) {
             const int ref = 1 << iteration;
-            BOOST_REQUIRE(std::holds_alternative<Int>(v.variant()));
-            int i = std::get<Int>(v.variant()).value();
+            BOOST_REQUIRE(holds_alternative<Int>(v));
+            int i = get<Int>(v).value();
             BOOST_CHECK_EQUAL(i, ref);
             int i2 = a.get<Int>(iteration).value();
             BOOST_CHECK_EQUAL(i, i2);
@@ -516,17 +516,17 @@ BOOST_AUTO_TEST_CASE(Iterator) {
         auto end = a.end();
 
         BOOST_REQUIRE(it != end);
-        BOOST_CHECK(std::holds_alternative<Nil>(it->variant()));
+        BOOST_CHECK(holds_alternative<Nil>(it->variant()));
 
         ++it;
         BOOST_REQUIRE(it != end);
-        BOOST_CHECK(std::holds_alternative<Boolean>(it->variant()));
-        BOOST_CHECK_EQUAL(std::get<Boolean>(it->variant()).value(), true);
+        BOOST_CHECK(holds_alternative<Boolean>(it->variant()));
+        BOOST_CHECK_EQUAL(get<Boolean>(it->variant()).value(), true);
 
         ++it;
         BOOST_REQUIRE(it != end);
-        BOOST_CHECK(std::holds_alternative<Int>(it->variant()));
-        BOOST_CHECK_EQUAL(std::get<Int>(it->variant()).value(), 42);
+        BOOST_CHECK(holds_alternative<Int>(it->variant()));
+        BOOST_CHECK_EQUAL(get<Int>(it->variant()).value(), 42);
 
         ++it;
         BOOST_CHECK(it == end);
@@ -591,8 +591,8 @@ BOOST_AUTO_TEST_CASE(InsertNil) {
         BOOST_CHECK_EQUAL(s.size(), 1);
 
         const auto &g = s.get_value("nil0");
-        BOOST_REQUIRE(std::holds_alternative<Nil>(g.variant()));
-        std::get<Nil>(g.variant());
+        BOOST_REQUIRE(holds_alternative<Nil>(g));
+        auto &n1 = get<Nil>(g);
     }
     {
         Struct s;
@@ -601,8 +601,8 @@ BOOST_AUTO_TEST_CASE(InsertNil) {
         s.insert("nil0", nil);
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("nil0");
-        BOOST_REQUIRE(std::holds_alternative<Nil>(g.variant()));
-        std::get<Nil>(g.variant());
+        BOOST_REQUIRE(holds_alternative<Nil>(g));
+        auto &n1 = get<Nil>(g);
         auto &v = s.get<Nil>("nil0");
     }
     {
@@ -614,8 +614,8 @@ BOOST_AUTO_TEST_CASE(InsertNil) {
         s.insert("nil1", nil);
         BOOST_REQUIRE_EQUAL(s.size(), 2);
         const auto &g = s.get_value("nil0");
-        BOOST_REQUIRE(std::holds_alternative<Nil>(g.variant()));
-        std::get<Nil>(g.variant());
+        BOOST_REQUIRE(holds_alternative<Nil>(g));
+        auto &n1 = get<Nil>(g);
         BOOST_REQUIRE(holds_alternative<Nil>(s.get_value("nil0")));
         BOOST_REQUIRE(holds_alternative<Nil>(s.get_value("nil1")));
     }
@@ -624,10 +624,10 @@ BOOST_AUTO_TEST_CASE(InsertNil) {
         BOOST_CHECK_EQUAL(s.size(), 0);
         s.insert("nil0", Nil{});
         BOOST_REQUIRE_EQUAL(s.size(), 1);
-        BOOST_CHECK(std::holds_alternative<Nil>(s.get_value("nil0").variant()));
+        BOOST_CHECK(holds_alternative<Nil>(s.get_value("nil0")));
         s.insert("nil0", Nil{});
         BOOST_REQUIRE_EQUAL(s.size(), 1);
-        BOOST_CHECK(std::holds_alternative<Nil>(s.get_value("nil0").variant()));
+        BOOST_CHECK(holds_alternative<Nil>(s.get_value("nil0")));
     }
 }
 
@@ -638,8 +638,8 @@ BOOST_AUTO_TEST_CASE(InsertInt) {
         s.insert("int0", Int{42});
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("int0");
-        BOOST_REQUIRE(std::holds_alternative<Int>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Int>(g.variant()).value(), 42);
+        BOOST_REQUIRE(holds_alternative<Int>(g));
+        BOOST_CHECK_EQUAL(get<Int>(g).value(), 42);
     }
     {
         Struct s;
@@ -648,8 +648,8 @@ BOOST_AUTO_TEST_CASE(InsertInt) {
         s.insert("int0", i);
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("int0");
-        BOOST_REQUIRE(std::holds_alternative<Int>(g.variant()));
-        const auto &i2 = std::get<Int>(g.variant());
+        BOOST_REQUIRE(holds_alternative<Int>(g));
+        const auto &i2 = get<Int>(g);
         BOOST_CHECK_EQUAL(i2.value(), 42);
         i.set_value(82);
         BOOST_CHECK_EQUAL(i2.value(), 42);
@@ -661,10 +661,10 @@ BOOST_AUTO_TEST_CASE(InsertInt) {
         BOOST_CHECK_EQUAL(s.size(), 0);
         s.insert("v", Nil{});
         BOOST_CHECK_EQUAL(s.size(), 1);
-        BOOST_CHECK(std::holds_alternative<Nil>(s.get_value("v").variant()));
+        BOOST_CHECK(holds_alternative<Nil>(s.get_value("v")));
         s.insert("v", Int{});
         BOOST_CHECK_EQUAL(s.size(), 1);
-        BOOST_CHECK(std::holds_alternative<Int>(s.get_value("v").variant()));
+        BOOST_CHECK(holds_alternative<Int>(s.get_value("v")));
     }
 }
 
@@ -675,8 +675,8 @@ BOOST_AUTO_TEST_CASE(InsertDouble) {
         s.insert("d0", Double{1.5});
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("d0");
-        BOOST_REQUIRE(std::holds_alternative<Double>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Double>(g.variant()).value(), 1.5);
+        BOOST_REQUIRE(holds_alternative<Double>(g));
+        BOOST_CHECK_EQUAL(get<Double>(g).value(), 1.5);
     }
     {
         Struct s;
@@ -685,8 +685,8 @@ BOOST_AUTO_TEST_CASE(InsertDouble) {
         s.insert("int0", i);
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("int0");
-        BOOST_REQUIRE(std::holds_alternative<Double>(g.variant()));
-        const auto &i2 = std::get<Double>(g.variant());
+        BOOST_REQUIRE(holds_alternative<Double>(g));
+        const auto &i2 = get<Double>(g);
         BOOST_CHECK_EQUAL(i2.value(), 4.25);
         i.set_value(-9.5);
         BOOST_CHECK_EQUAL(i2.value(), 4.25);
@@ -698,10 +698,10 @@ BOOST_AUTO_TEST_CASE(InsertDouble) {
         BOOST_CHECK_EQUAL(s.size(), 0);
         s.insert("v", Double{4.12});
         BOOST_CHECK_EQUAL(s.size(), 1);
-        BOOST_CHECK(std::holds_alternative<Double>(s.get_value("v").variant()));
+        BOOST_CHECK(holds_alternative<Double>(s.get_value("v")));
         s.insert("v", Nil{});
         BOOST_CHECK_EQUAL(s.size(), 1);
-        BOOST_CHECK(std::holds_alternative<Nil>(s.get_value("v").variant()));
+        BOOST_CHECK(holds_alternative<Nil>(s.get_value("v")));
     }
 }
 
@@ -712,8 +712,8 @@ BOOST_AUTO_TEST_CASE(InsertString) {
         s.insert("str0", String{"hello string"});
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("str0");
-        BOOST_REQUIRE(std::holds_alternative<String>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<String>(g.variant()).value(), "hello string");
+        BOOST_REQUIRE(holds_alternative<String>(g));
+        BOOST_CHECK_EQUAL(get<String>(g).value(), "hello string");
         auto &v = s.get<String>("str0");
         BOOST_CHECK_EQUAL(v.value(), "hello string");
     }
@@ -725,8 +725,8 @@ BOOST_AUTO_TEST_CASE(InsertString) {
         BOOST_CHECK_EQUAL(str.value(), "long string");
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("str0");
-        BOOST_REQUIRE(std::holds_alternative<String>(g.variant()));
-        const auto &str2 = std::get<String>(g.variant());
+        BOOST_REQUIRE(holds_alternative<String>(g));
+        const auto &str2 = get<String>(g);
         BOOST_CHECK_EQUAL(str2.value(), "long string");
         str.value() += " even longer";
         BOOST_CHECK_EQUAL(str.value(), "long string even longer");
@@ -743,11 +743,11 @@ BOOST_AUTO_TEST_CASE(InsertArray) {
         auto &a_child = s.insert("a0", Array{});
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("a0");
-        BOOST_REQUIRE(std::holds_alternative<Array>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Array>(g.variant()).size(), 0);
+        BOOST_REQUIRE(holds_alternative<Array>(g));
+        BOOST_CHECK_EQUAL(get<Array>(g).size(), 0);
         BOOST_CHECK_EQUAL(a_child.size(), 0);
         a_child.push_back(Nil{});
-        BOOST_CHECK_EQUAL(std::get<Array>(g.variant()).size(), 1);
+        BOOST_CHECK_EQUAL(get<Array>(g).size(), 1);
         BOOST_CHECK_EQUAL(a_child.size(), 1);
     }
     {
@@ -757,19 +757,19 @@ BOOST_AUTO_TEST_CASE(InsertArray) {
         auto &a_child = s.insert("a0", Array{});
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("a0");
-        BOOST_REQUIRE(std::holds_alternative<Array>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Array>(g.variant()).size(), 0);
+        BOOST_REQUIRE(holds_alternative<Array>(g));
+        BOOST_CHECK_EQUAL(get<Array>(g).size(), 0);
         BOOST_CHECK_EQUAL(a_child.size(), 0);
         BOOST_CHECK_EQUAL(s2.size(), 0);
 
         s2.insert("n0", Nil{});
         BOOST_CHECK_EQUAL(s2.size(), 1);
-        BOOST_CHECK_EQUAL(std::get<Array>(g.variant()).size(), 0);
+        BOOST_CHECK_EQUAL(get<Array>(g).size(), 0);
         BOOST_CHECK_EQUAL(a_child.size(), 0);
 
         a_child.push_back(Nil{});
         BOOST_CHECK_EQUAL(s2.size(), 1);
-        BOOST_CHECK_EQUAL(std::get<Array>(g.variant()).size(), 1);
+        BOOST_CHECK_EQUAL(get<Array>(g).size(), 1);
         BOOST_CHECK_EQUAL(a_child.size(), 1);
     }
 }
@@ -781,11 +781,11 @@ BOOST_AUTO_TEST_CASE(InsertStruct) {
         auto &s_child = s.insert("s0", Struct{});
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("s0");
-        BOOST_REQUIRE(std::holds_alternative<Struct>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Struct>(g.variant()).size(), 0);
+        BOOST_REQUIRE(holds_alternative<Struct>(g));
+        BOOST_CHECK_EQUAL(get<Struct>(g).size(), 0);
         BOOST_CHECK_EQUAL(s_child.size(), 0);
         s_child.insert("s0", Nil{});
-        BOOST_CHECK_EQUAL(std::get<Struct>(g.variant()).size(), 1);
+        BOOST_CHECK_EQUAL(get<Struct>(g).size(), 1);
         BOOST_CHECK_EQUAL(s_child.size(), 1);
     }
     {
@@ -795,19 +795,19 @@ BOOST_AUTO_TEST_CASE(InsertStruct) {
         auto &s_child = s.insert("s0", Struct{});
         BOOST_REQUIRE_EQUAL(s.size(), 1);
         const auto &g = s.get_value("s0");
-        BOOST_REQUIRE(std::holds_alternative<Struct>(g.variant()));
-        BOOST_CHECK_EQUAL(std::get<Struct>(g.variant()).size(), 0);
+        BOOST_REQUIRE(holds_alternative<Struct>(g));
+        BOOST_CHECK_EQUAL(get<Struct>(g).size(), 0);
         BOOST_CHECK_EQUAL(s_child.size(), 0);
         BOOST_CHECK_EQUAL(s2.size(), 0);
 
         s2.insert("n0", Nil{});
         BOOST_CHECK_EQUAL(s2.size(), 1);
-        BOOST_CHECK_EQUAL(std::get<Struct>(g.variant()).size(), 0);
+        BOOST_CHECK_EQUAL(get<Struct>(g).size(), 0);
         BOOST_CHECK_EQUAL(s_child.size(), 0);
 
         s_child.insert("s0", Nil{});
         BOOST_CHECK_EQUAL(s2.size(), 1);
-        BOOST_CHECK_EQUAL(std::get<Struct>(g.variant()).size(), 1);
+        BOOST_CHECK_EQUAL(get<Struct>(g).size(), 1);
         BOOST_CHECK_EQUAL(s_child.size(), 1);
     }
 }
@@ -828,8 +828,8 @@ BOOST_AUTO_TEST_CASE(ForLoop) {
             BOOST_CHECK(b2);
 
             const int ref = 1 << iteration;
-            BOOST_REQUIRE(std::holds_alternative<Int>(value.variant()));
-            int i = std::get<Int>(value.variant()).value();
+            BOOST_REQUIRE(holds_alternative<Int>(value));
+            int i = get<Int>(value).value();
             BOOST_CHECK_EQUAL(i, s.get<Int>(key).value());
             BOOST_CHECK_EQUAL(i, ref);
             ++iteration;
@@ -850,19 +850,19 @@ BOOST_AUTO_TEST_CASE(Iterator) {
 
         BOOST_REQUIRE(it != end);
         BOOST_CHECK_EQUAL(it->first, "arg0");
-        BOOST_CHECK(std::holds_alternative<Nil>(it->second.variant()));
+        BOOST_CHECK(holds_alternative<Nil>(it->second));
 
         ++it;
         BOOST_REQUIRE(it != end);
         BOOST_CHECK_EQUAL(it->first, "arg1");
-        BOOST_CHECK(std::holds_alternative<Boolean>(it->second.variant()));
-        BOOST_CHECK_EQUAL(std::get<Boolean>(it->second.variant()).value(), true);
+        BOOST_CHECK(holds_alternative<Boolean>(it->second));
+        BOOST_CHECK_EQUAL(get<Boolean>(it->second).value(), true);
 
         ++it;
         BOOST_REQUIRE(it != end);
         BOOST_CHECK_EQUAL(it->first, "arg2");
-        BOOST_CHECK(std::holds_alternative<Int>(it->second.variant()));
-        BOOST_CHECK_EQUAL(std::get<Int>(it->second.variant()).value(), 42);
+        BOOST_CHECK(holds_alternative<Int>(it->second));
+        BOOST_CHECK_EQUAL(get<Int>(it->second).value(), 42);
 
         ++it;
         BOOST_CHECK(it == end);

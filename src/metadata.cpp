@@ -14,12 +14,12 @@ namespace subdl {
 
 namespace ml = MediaInfoLib;
 
-[[maybe_unused]]
+[[nodiscard]]
 static ml::String to_mediainfo_string(const std::string_view &s) {
     return to_wstring(s);
 }
 
-[[maybe_unused]]
+[[nodiscard]]
 static ml::String to_mediainfo_string(const std::wstring_view &s) {
     return static_cast<MediaInfoLib::String>(s);
 }

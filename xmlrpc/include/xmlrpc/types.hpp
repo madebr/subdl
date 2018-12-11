@@ -240,6 +240,8 @@ private:
     value_type &variant();
     value_type variant_;
     template <typename T>
+    bool holds_alternative(const xmlrpc::Value &v);
+    template <typename T>
     friend const T &get(const xmlrpc::Value &v);
     template <typename T>
     friend T &get(xmlrpc::Value &v);
@@ -262,13 +264,13 @@ template <typename T>
 
 template <typename T>
 T &Array::get(size_t i) {
-    return get<T>(values_[i].variant());
+    return xmlrpc::get<T>(values_[i]);
 }
 
 template <typename T>
 T &Array::push_back(T &&v) {
     values_.push_back(Value{std::forward<T>(v)});
-    return std::get<typename std::decay<T>::type>(values_.back().variant());
+    return xmlrpc::get<typename std::decay<T>::type>(values_.back());
 }
 
 template <typename... Targs>
@@ -279,7 +281,7 @@ Value &Array::emplace_back(Targs &&...args) {
 template <typename TKey, typename T>
 T &Struct::insert(TKey &&key, T &&value) {
     auto it_bool = members_.insert_or_assign(std::forward<TKey>(key), Value{std::forward<T>(value)});
-    return std::get<typename std::decay<T>::type>(it_bool.first->second.variant());
+    return xmlrpc::get<typename std::decay<T>::type>(it_bool.first->second);
 }
 
 template <typename TKey, typename... TArgs>
@@ -308,12 +310,12 @@ Value &Struct::get_value(TKey &&key) {
 
 template <typename T, typename TKey>
 const T &Struct::get(TKey &&key) const {
-    return std::get<T>(get_value(std::forward<TKey>(key)).variant());
+    return xmlrpc::get<T>(get_value(std::forward<TKey>(key)));
 }
 
 template <typename T, typename TKey>
 T &Struct::get(TKey &&key) {
-    return std::get<T>(get_value(std::forward<TKey>(key)).variant());
+    return xmlrpc::get<T>(get_value(std::forward<TKey>(key)));
 }
 
 }

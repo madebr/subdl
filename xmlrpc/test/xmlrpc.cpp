@@ -18,31 +18,31 @@ BOOST_AUTO_TEST_CASE(OneNullArgument) {
     MethodArgs method("method");
     auto vals = method.call(nullptr);
     BOOST_CHECK(vals.size() == 1);
-    BOOST_CHECK(std::holds_alternative<Nil>(vals[0].variant()));
+    BOOST_CHECK(holds_alternative<Nil>(vals[0]));
 }
 
 BOOST_AUTO_TEST_CASE(OneIntArgument) {
     MethodArgs method("method");
     auto vals = method.call(987);
     BOOST_CHECK(vals.size() == 1);
-    BOOST_REQUIRE(std::holds_alternative<Int>(vals[0].variant()));
-    BOOST_CHECK_EQUAL(get<Int>(vals[0].variant()).value(), 987);
+    BOOST_REQUIRE(holds_alternative<Int>(vals[0]));
+    BOOST_CHECK_EQUAL(get<Int>(vals[0]).value(), 987);
 }
 
 BOOST_AUTO_TEST_CASE(OneDoubleArgument) {
     MethodArgs method("method");
     auto vals = method.call(4.125);
     BOOST_CHECK(vals.size() == 1);
-    BOOST_REQUIRE(std::holds_alternative<Double>(vals[0].variant()));
-    BOOST_CHECK_EQUAL(get<Double>(vals[0].variant()).value(), 4.125);
+    BOOST_REQUIRE(holds_alternative<Double>(vals[0]));
+    BOOST_CHECK_EQUAL(get<Double>(vals[0]).value(), 4.125);
 }
 
 BOOST_AUTO_TEST_CASE(OneStringArgument) {
     MethodArgs method("method");
     auto vals = method.call("arg");
     BOOST_CHECK(vals.size() == 1);
-    BOOST_REQUIRE(std::holds_alternative<String>(vals[0].variant()));
-    BOOST_CHECK_EQUAL(get<String>(vals[0].variant()).value(), "arg");
+    BOOST_REQUIRE(holds_alternative<String>(vals[0]));
+    BOOST_CHECK_EQUAL(get<String>(vals[0]).value(), "arg");
 }
 
 BOOST_AUTO_TEST_CASE(OneArrayArgument) {
@@ -51,10 +51,10 @@ BOOST_AUTO_TEST_CASE(OneArrayArgument) {
     a.emplace_back(1);
     auto vals = method.call(a);
     BOOST_CHECK(vals.size() == 1);
-    BOOST_REQUIRE(std::holds_alternative<Array>(vals[0].variant()));
-    auto &a2 = get<Array>(vals[0].variant());
+    BOOST_REQUIRE(holds_alternative<Array>(vals[0]));
+    auto &a2 = get<Array>(vals[0]);
     BOOST_REQUIRE_EQUAL(a2.size(), 1);
-    BOOST_REQUIRE(std::holds_alternative<Int>(a2[0].variant()));
+    BOOST_REQUIRE(holds_alternative<Int>(a2[0]));
 }
 
 BOOST_AUTO_TEST_CASE(OneStructArgument) {
@@ -63,8 +63,8 @@ BOOST_AUTO_TEST_CASE(OneStructArgument) {
     s.emplace("a0", 3);
     auto vals = method.call(s);
     BOOST_CHECK(vals.size() == 1);
-    BOOST_REQUIRE(std::holds_alternative<Struct>(vals[0].variant()));
-    auto &s2 = get<Struct>(vals[0].variant());
+    BOOST_REQUIRE(holds_alternative<Struct>(vals[0]));
+    auto &s2 = get<Struct>(vals[0]);
     BOOST_REQUIRE_EQUAL(s2.size(), 1);
     BOOST_CHECK_EQUAL(s2.get<Int>("a0").value(), 3);
 }
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(FourArguments) {
     int i = 1;
     for (auto & v : vals) {
         BOOST_REQUIRE(holds_alternative<Int>(v));
-        auto vi = get<Int>(v.variant()).value();
+        auto vi = get<Int>(v).value();
         BOOST_CHECK_EQUAL(vi, i);
         i *= 4;
     }

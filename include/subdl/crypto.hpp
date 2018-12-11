@@ -40,7 +40,7 @@ public:
     void reset() noexcept;
     void change_hash(hash_t h) noexcept;
     void update(std::string_view data) noexcept;
-    max_md_t finalize_reset() noexcept;
+    [[nodiscard]] max_md_t finalize_reset() noexcept;
 private:
     void *mdctx_;
     const void *md_;
