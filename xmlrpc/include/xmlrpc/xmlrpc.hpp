@@ -8,21 +8,30 @@
 
 namespace xmlrpc {
 
-class MethodArgs {
+class CallMethod {
     std::string name_;
+    std::vector<Value> data_;
 public:
     template <typename T>
-    MethodArgs(T &&name) : name_(std::forward<T>(name)) {
+    CallMethod(T &&name) : name_(std::forward<T>(name)) {
     }
 
     template <typename... TArgs>
-    std::vector<Value> call(TArgs&&...args) {
-        Args argsobj;
-        argsobj.call<sizeof...(args)>(std::forward<TArgs>(args)...);
-        return argsobj.values;
+    void call(TArgs&&...args) {
+        MethodArgsData argsObj;
+        argsObj.call<sizeof...(args)>(std::forward<TArgs>(args)...);
+        data_ = std::move(argsObj.values);
+    }
+
+    const std::string &name() const noexcept {
+        return name_;
+    }
+
+    const std::vector<Value> &data() const noexcept {
+        return data_;
     }
 private:
-    struct Args {
+    struct MethodArgsData {
         std::vector<Value> values;
 
         template <size_t N, typename... TArgs>
@@ -39,8 +48,6 @@ private:
         template <size_t I, typename T, typename... TArgs>
         constexpr void _call(T &&arg, TArgs&&... args) {
             values.emplace_back(std::forward<T>(arg));
-//            values[I-1] = std::forward<T>(arg);
-//            values[I-1] = std::forward<T>(arg);
             _call<I - 1>(std::forward<TArgs>(args)...);
         }
     };

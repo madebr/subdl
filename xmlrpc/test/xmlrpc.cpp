@@ -9,77 +9,93 @@ using namespace xmlrpc;
 BOOST_AUTO_TEST_SUITE(xmlrpc_call)
 
 BOOST_AUTO_TEST_CASE(NoArguments) {
-    MethodArgs method("method");
-    auto vals = method.call();
-    BOOST_CHECK_EQUAL(vals.size(), 0);
+    CallMethod method("method");
+    method.call();
+    BOOST_CHECK_EQUAL(method.data().size(), 0);
+
+    BOOST_CHECK_EQUAL(method.name(), "method");
 }
 
 BOOST_AUTO_TEST_CASE(OneNullArgument) {
-    MethodArgs method("method");
-    auto vals = method.call(nullptr);
-    BOOST_CHECK(vals.size() == 1);
-    BOOST_CHECK(holds_alternative<Nil>(vals[0]));
+    CallMethod method("method");
+    method.call(nullptr);
+    BOOST_CHECK(method.data().size() == 1);
+    BOOST_CHECK(holds_alternative<Nil>(method.data()[0]));
+
+    BOOST_CHECK_EQUAL(method.name(), "method");
 }
 
 BOOST_AUTO_TEST_CASE(OneIntArgument) {
-    MethodArgs method("method");
-    auto vals = method.call(987);
-    BOOST_CHECK(vals.size() == 1);
-    BOOST_REQUIRE(holds_alternative<Int>(vals[0]));
-    BOOST_CHECK_EQUAL(get<Int>(vals[0]).value(), 987);
+    CallMethod method("method");
+    method.call(987);
+    BOOST_CHECK(method.data().size() == 1);
+    BOOST_REQUIRE(holds_alternative<Int>(method.data()[0]));
+    BOOST_CHECK_EQUAL(get<Int>(method.data()[0]).value(), 987);
+
+    BOOST_CHECK_EQUAL(method.name(), "method");
 }
 
 BOOST_AUTO_TEST_CASE(OneDoubleArgument) {
-    MethodArgs method("method");
-    auto vals = method.call(4.125);
-    BOOST_CHECK(vals.size() == 1);
-    BOOST_REQUIRE(holds_alternative<Double>(vals[0]));
-    BOOST_CHECK_EQUAL(get<Double>(vals[0]).value(), 4.125);
+    CallMethod method("method");
+    method.call(4.125);
+    BOOST_CHECK(method.data().size() == 1);
+    BOOST_REQUIRE(holds_alternative<Double>(method.data()[0]));
+    BOOST_CHECK_EQUAL(get<Double>(method.data()[0]).value(), 4.125);
+
+    BOOST_CHECK_EQUAL(method.name(), "method");
 }
 
 BOOST_AUTO_TEST_CASE(OneStringArgument) {
-    MethodArgs method("method");
-    auto vals = method.call("arg");
-    BOOST_CHECK(vals.size() == 1);
-    BOOST_REQUIRE(holds_alternative<String>(vals[0]));
-    BOOST_CHECK_EQUAL(get<String>(vals[0]).value(), "arg");
+    CallMethod method("method");
+    method.call("arg");
+    BOOST_CHECK(method.data().size() == 1);
+    BOOST_REQUIRE(holds_alternative<String>(method.data()[0]));
+    BOOST_CHECK_EQUAL(get<String>(method.data()[0]).value(), "arg");
+
+    BOOST_CHECK_EQUAL(method.name(), "method");
 }
 
 BOOST_AUTO_TEST_CASE(OneArrayArgument) {
-    MethodArgs method("method");
+    CallMethod method("method");
     Array a;
     a.emplace_back(1);
-    auto vals = method.call(a);
-    BOOST_CHECK(vals.size() == 1);
-    BOOST_REQUIRE(holds_alternative<Array>(vals[0]));
-    auto &a2 = get<Array>(vals[0]);
+    method.call(a);
+    BOOST_CHECK(method.data().size() == 1);
+    BOOST_REQUIRE(holds_alternative<Array>(method.data()[0]));
+    auto &a2 = get<Array>(method.data()[0]);
     BOOST_REQUIRE_EQUAL(a2.size(), 1);
     BOOST_REQUIRE(holds_alternative<Int>(a2[0]));
+
+    BOOST_CHECK_EQUAL(method.name(), "method");
 }
 
 BOOST_AUTO_TEST_CASE(OneStructArgument) {
-    MethodArgs method("method");
+    CallMethod method("method");
     Struct s;
     s.emplace("a0", 3);
-    auto vals = method.call(s);
-    BOOST_CHECK(vals.size() == 1);
-    BOOST_REQUIRE(holds_alternative<Struct>(vals[0]));
-    auto &s2 = get<Struct>(vals[0]);
+    method.call(s);
+    BOOST_CHECK(method.data().size() == 1);
+    BOOST_REQUIRE(holds_alternative<Struct>(method.data()[0]));
+    auto &s2 = get<Struct>(method.data()[0]);
     BOOST_REQUIRE_EQUAL(s2.size(), 1);
     BOOST_CHECK_EQUAL(s2.get<Int>("a0").value(), 3);
+
+    BOOST_CHECK_EQUAL(method.name(), "method");
 }
 
 BOOST_AUTO_TEST_CASE(FourArguments) {
-    MethodArgs method("method");
-    auto vals = method.call(1, 4, 16, 64, 256);
-    BOOST_CHECK_EQUAL(vals.size(), 5);
+    CallMethod method("method");
+    method.call(1, 4, 16, 64, 256);
+    BOOST_CHECK_EQUAL(method.data().size(), 5);
     int i = 1;
-    for (auto & v : vals) {
+    for (auto & v : method.data()) {
         BOOST_REQUIRE(holds_alternative<Int>(v));
         auto vi = get<Int>(v).value();
         BOOST_CHECK_EQUAL(vi, i);
         i *= 4;
     }
+
+    BOOST_CHECK_EQUAL(method.name(), "method");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -14,14 +14,16 @@ namespace subdl {
 
 namespace ml = MediaInfoLib;
 
+namespace {
 [[nodiscard]]
-static ml::String to_mediainfo_string(const std::string_view &s) {
+ml::String to_mediainfo_string(const std::string_view &s) {
     return to_wstring(s);
 }
 
-[[nodiscard]]
-static ml::String to_mediainfo_string(const std::wstring_view &s) {
-    return static_cast<MediaInfoLib::String>(s);
+//[[nodiscard]]
+//ml::String to_mediainfo_string(const std::wstring_view &s) {
+//    return static_cast<MediaInfoLib::String>(s);
+//}
 }
 
 template<typename T>

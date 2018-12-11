@@ -127,9 +127,10 @@ public:
 class String : public ScalarType<std::string> {
 public:
     String() : ScalarType<value_type>() {}
-    String(const std::string &s) : ScalarType<value_type>(s) {}
+//    String(String &&s) = default;
+//    String(const String &s) = default;
+    //String(const std::string &s) : ScalarType<value_type>(s) {}
     String(std::string &&s) : ScalarType<value_type>(std::move(s)) {}
-    String(const char *s) : ScalarType<value_type>(s) {}
 public:
     [[nodiscard]] const value_type &value() const {
         return data_;

@@ -9,6 +9,8 @@
 #include <xmlrpc/types.hpp>
 #include <xmlrpc/rapidxml.hpp>
 
+#include <rapidxml_print.h>
+
 #include <memory>
 
 #include <iostream>  // FIXME: debug
@@ -47,7 +49,7 @@ class os_session : public::std::enable_shared_from_this<os_session> {
     tcp::resolver resolver_;
     ssl::stream<tcp::socket> stream_;
     boost::beast::flat_buffer buffer_; // (Must persist between reads)
-    http::request<http::empty_body> req_;
+    http::request<http::string_body> req_;
     http::response<http::string_body> res_;
 public:
     os_session(boost::asio::io_context& ioc, ssl::context& ctx)
@@ -61,11 +63,21 @@ public:
             return;
         }
         req_.version(version);
-        req_.method(http::verb::get);
+        req_.method(http::verb::post);
         req_.target(target);
         req_.set(http::field::host, host);
         req_.set(http::field::user_agent, USER_AGENT.string());
         req_.keep_alive(false);
+
+        xmlrpc::CallMethod cm("LogIn");
+        cm.call("", "", "en", USER_AGENT.string());
+        rapidxml::xml_document<> document;
+        xmlrpc::rapidxml::MethodToXmlConverter<>::append_xml(&document, cm);
+        std::ostringstream oss;
+        ::rapidxml::print<char>(oss, document, ::rapidxml::print_no_indenting);
+
+        req_.body() = oss.str();
+        req_.prepare_payload();
 
         resolver_.async_resolve(host, port,
                                 [obj=shared_from_this()] (auto &&arg1, auto &&arg2) {
@@ -125,6 +137,8 @@ public:
 
         // Write the message to standard out
         std::cout << res_ << std::endl;
+        const auto &body = res_.body();
+        std::cout << "body = '" << body << "'\n";
 
         // Gracefully close the stream
         stream_.async_shutdown([obj=shared_from_this()](auto &&arg) {

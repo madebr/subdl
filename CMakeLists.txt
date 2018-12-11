@@ -176,6 +176,7 @@ add_executable(main
 target_link_libraries(main
     PUBLIC
         subdl
+        xmlrpc_rapidxml
 )
 
 set_target_properties(main
