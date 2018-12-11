@@ -1,8 +1,12 @@
 #ifndef SUBDL_VERSION_HPP
 #define SUBDL_VERSION_HPP
 
-#define SUBDL_NAME "@PROJECT_NAME@"
+namespace subdl {
 
-#define SUBDL_VERSION "@PROJECT_VERSION@"
+static constexpr auto SUBDL_NAME = "@PROJECT_NAME@";
+
+static constexpr auto SUBDL_VERSION = "@PROJECT_VERSION@";
+
+}
 
 #endif // SUBDL_VERSION_HPP

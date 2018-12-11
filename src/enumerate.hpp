@@ -6,7 +6,7 @@
 template<typename T,
          typename TIter = decltype(std::begin(std::declval<T>())),
          typename = decltype(std::end(std::declval<T>()))>
-constexpr auto enumerate(T && iterable) {
+[[nodiscard]] constexpr auto enumerate(T && iterable) {
     struct iterator {
         size_t i;
         TIter iter;

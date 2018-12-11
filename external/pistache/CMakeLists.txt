@@ -1,0 +1,5 @@
+set(PISTACHE_BUILD_EXAMPLES OFF)
+set(PISTACHE_BUILD_TESTS OFF)
+set(PISTACHE_INSTALL OFF)
+
+add_subdirectory(pistache)

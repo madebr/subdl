@@ -20,10 +20,10 @@ public:
     MetaDataLoader(const MetaDataLoader &) = delete;
     MetaDataLoader(MetaDataLoader &&) = default;
     ~MetaDataLoader();
-    std::optional<VideoMetaData> get_metadata(const std::string &filename) noexcept;
+    [[nodiscard]] std::optional<VideoMetaData> get_metadata(const std::string &filename) noexcept;
 private:
-    std::optional<std::uint32_t> get_time_ms() noexcept;
-    std::optional<std::uint32_t> get_framecount() noexcept;
+    [[nodiscard]] std::optional<std::uint32_t> get_time_ms() noexcept;
+    [[nodiscard]] std::optional<std::uint32_t> get_framecount() noexcept;
     std::optional<float> get_framerate() noexcept;
     struct Impl;
     std::unique_ptr<Impl> state_;

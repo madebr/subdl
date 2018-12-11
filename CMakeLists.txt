@@ -4,17 +4,20 @@ project(subdl
     LANGUAGES C CXX
 )
 
+option(SUBDL_TESTS "Build subdl tests")
+
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
 include(CodeCoverage)
 codecoverage_enable()
 
-find_package(Boost REQUIRED COMPONENTS unit_test_framework system)
 find_package(cpprestsdk REQUIRED CONFIG)
+find_package(Boost REQUIRED COMPONENTS system)
 find_package(fmt REQUIRED)
 find_package(icu REQUIRED)
 find_package(MediaInfo REQUIRED)
 find_package(OpenSSL REQUIRED COMPONENTS Crypto)
+find_package(RapidXml REQUIRED)
 
 set(Python_ADDITIONAL_VERSIONS 3)
 find_package(PythonInterp REQUIRED COMPONENTS Interpreter)
@@ -23,6 +26,7 @@ if (PYTHON_VERSION_STRING VERSION_LESS 3.4)
 endif()
 
 add_subdirectory(assets)
+add_subdirectory(external)
 
 configure_file(include/subdl/version.hpp.in include/subdl/version.hpp)
 
@@ -57,6 +61,7 @@ add_library(subdl
     src/util.hpp
 
     src/provider/opensubtitles.cpp
+    src/provider/opensubtitles2.cpp
     src/provider/opensubtitles.hpp
 
     src/enumerate.hpp
@@ -70,14 +75,19 @@ target_include_directories(subdl
 
 target_link_libraries(subdl
     PRIVATE
+        Boost::boost
+        Boost::system
         stdc++fs
         cpprestsdk::cpprest
         Boost::system
         fmt
         icu
+        #iqxmlrpc
         MediaInfo::MediaInfo
         OpenSSL::Crypto
         ${CMAKE_DL_LIBS}
+        xmlrpc_rapidxml
+        RapidXml::RapidXml
 )
 
 target_compile_options(subdl
@@ -94,56 +104,72 @@ target_compile_definitions(subdl
 set_target_properties(subdl
     PROPERTIES
         C_STANDARD 11
-        C_STANDARD_REQUIRED ON
+        C_EXTENSIONS OFF
         CXX_STANDARD 17
-        CXX_STANDARD_REQUIRED ON
+        CXX_EXTENSIONS OFF
 )
 
-add_executable(subdltests
-    test/constants.hpp
-    test/main.cpp
-    test/crypto.cpp
-    test/metadata.cpp
-    test/videofile.cpp
-)
+if(SUBDL_TESTS)
+    find_package(Boost REQUIRED COMPONENTS unit_test_framework system)
 
-target_compile_definitions(subdltests
-    PRIVATE
-        BOOST_ALL_DYN_LINK
-)
+    add_executable(subdltests
+        test/constants.hpp
+        test/main.cpp
+        test/crypto.cpp
+        test/metadata.cpp
+        test/videofile.cpp
+    )
 
-target_link_libraries(subdltests
-    PUBLIC
-        subdl
-        Boost::unit_test_framework
-        stdc++fs
-)
+    target_compile_definitions(subdltests
+        PRIVATE
+            BOOST_ALL_DYN_LINK
+    )
 
-set_target_properties(subdltests
-    PROPERTIES
-        C_STANDARD 11
-        C_STANDARD_REQUIRED ON
-        CXX_STANDARD 17
-        CXX_STANDARD_REQUIRED ON
-)
+    target_link_libraries(subdltests
+        PUBLIC
+            subdl
+            Boost::unit_test_framework
+            stdc++fs
+    )
 
-set(TEST_ASSETS ref1.bin testsrc.mp4 secret.bin)
-file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_assets")
+    target_compile_options(subdltests
+        PRIVATE
+            -Wall
+            -Wpedantic
+    )
 
-add_custom_command(TARGET subdltests
-    POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E copy ${TEST_ASSETS} "${CMAKE_CURRENT_BINARY_DIR}/test_assets"
-    COMMAND chmod a-rwx "${CMAKE_CURRENT_BINARY_DIR}/test_assets/secret.bin"
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/test/assets"
-)
+    set_target_properties(subdltests
+        PROPERTIES
+            C_STANDARD 11
+            C_EXTENSIONS OFF
+            CXX_STANDARD 17
+            CXX_EXTENSIONS OFF
+    )
 
-enable_testing()
-add_test(NAME all_tests
-    COMMAND subdltests
-    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-)
+    set(TEST_ASSETS ref1.bin testsrc.mp4 secret.bin)
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_assets")
+
+    add_custom_command(TARGET subdltests
+        POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E copy ${TEST_ASSETS} "${CMAKE_CURRENT_BINARY_DIR}/test_assets"
+        COMMAND chmod a-rwx "${CMAKE_CURRENT_BINARY_DIR}/test_assets/secret.bin"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/test/assets"
+    )
+
+    enable_testing()
+    add_test(NAME subdltests
+        COMMAND subdltests
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    )
+
+    coverage_add_target(subdltests)
+endif()
+
+set(XMLRPC_RAPIDXML ON)
+add_subdirectory(xmlrpc)
 
 add_executable(main
+    src/build.cpp  # FIXME: remove once finished
     src/main.cpp
 )
 
@@ -155,13 +181,12 @@ target_link_libraries(main
 set_target_properties(main
     PROPERTIES
         C_STANDARD 11
-        C_STANDARD_REQUIRED ON
+        C_EXTENSIONS OFF
         CXX_STANDARD 17
-        CXX_STANDARD_REQUIRED ON
+        CXX_EXTENSIONS OFF
 )
 
 coverage_add_target(subdl)
-coverage_add_target(subdltests)
 coverage_add_target(main)
 
 coverage_collect()

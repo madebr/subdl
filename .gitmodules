@@ -1,3 +1,6 @@
 [submodule "external/pistache/pistache"]
 	path = external/pistache/pistache
 	url = https://github.com/oktal/pistache.git
+[submodule "external/libiqxmlrpc/libiqxmlrpc"]
+	path = external/libiqxmlrpc/libiqxmlrpc
+	url = https://github.com/adedov/libiqxmlrpc.git

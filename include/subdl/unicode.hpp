@@ -6,8 +6,8 @@
 
 namespace subdl {
 
-std::wstring to_wstring(const std::string_view s) noexcept;
-std::string to_string(const std::wstring_view s) noexcept;
+[[nodiscard]] std::wstring to_wstring(const std::string_view s) noexcept;
+[[nodiscard]] std::string to_string(const std::wstring_view s) noexcept;
 
 }
 
